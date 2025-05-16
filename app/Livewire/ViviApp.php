@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\App;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ViviApp extends Component
@@ -14,6 +15,12 @@ class ViviApp extends Component
     public function locations()
     {
         return $this->app->locations()->get();
+    }
+
+    #[On('echo:webhook,ViviWebhookReceived')]
+    public function test()
+    {
+        dd('oi');
     }
 
     public function render()

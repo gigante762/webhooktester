@@ -32,8 +32,8 @@
 
                 <!-- Channel Name Label -->
                 <div
-                    class="selection-none absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded">
-                    {{ $location->emergencyType?->name ?? 'none' }}
+                    class="selection-none absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded">
+                    {{ $location->name }}
                 </div>
             </div>
         @endforeach
