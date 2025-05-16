@@ -31,4 +31,9 @@ class Location extends Model
     {
         return $this->hasMany(EmergencyType::class);
     }
+
+    public function emergencyType(): BelongsTo
+    {
+        return $this->belongsTo(EmergencyType::class);
+    }
 }

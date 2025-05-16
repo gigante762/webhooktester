@@ -24,7 +24,7 @@ class EmergencyTriggerRequest extends FormRequest
         return [
             'key' => 'required',
             'type' => 'required',
-            'location' => 'required',
+            'location' => 'nullable|string',
         ];
     }
 }

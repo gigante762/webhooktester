@@ -6,65 +6,89 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EmergencyTriggerRequest;
 use App\Models\EmergencyType;
 use App\Models\Location;
-use Illuminate\Http\Request;
 
 class EmergencyController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
     public function trigger(EmergencyTriggerRequest $request)
     {
-        // Validate the request
-        $validated = $request->validated();
-
         $emergencyType =
         EmergencyType::query()
-            ->with('location')
-            ->where('code', $validated['type'])
-            ->whereRelation('location', 'code', $validated['location'])
+            ->where('code', $request->type)
+            ->whereHas('location', function ($query) use ($request) {
+                $query->whereRelation('app', 'api_key', $request->key);
+            })
+            ->when($request->location, function ($query) use ($request) {
+                $query->whereRelation('location', 'code', $request->location);
+            })
             ->first();
 
         if (! $emergencyType) {
             return response()->json([
-                'message' => 'Emergency type not found for the given location',
+                'message' => 'Emergency type not found for the given location or app',
             ], 404);
         }
 
-        $location = Location::whereRelation('app', 'api_key', $validated['key'])
-            ->where('code', $validated['location'])
-            ->firstOrFail();
-
-        $location->update([
-            'emergency_type_id' => $emergencyType?->id,
-        ]);
+        Location::whereRelation('app', 'api_key', $request->key)
+            ->when($request->location, function ($query) use ($request) {
+                $query->where('code', $request->location);
+            })
+            ->update([
+                'emergency_type_id' => $emergencyType->id,
+            ]);
 
         return response()->json([
             'message' => 'Emergency triggered successfully',
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function cancel(EmergencyTriggerRequest $request)
     {
-        //
+        $emergencyType =
+        EmergencyType::query()
+            ->where('code', $request->type)
+            ->whereHas('location', function ($query) use ($request) {
+                $query->whereRelation('app', 'api_key', $request->key);
+            })
+            ->when($request->location, function ($query) use ($request) {
+                $query->whereRelation('location', 'code', $request->location);
+            })
+            ->first();
+
+        if (! $emergencyType) {
+            return response()->json([
+                'message' => 'Emergency type not found for the given location or app',
+            ], 404);
+        }
+
+        Location::whereRelation('app', 'api_key', $request->key)
+            ->when($request->location, function ($query) use ($request) {
+                $query->where('code', $request->location);
+            })
+            ->whereNotNull('emergency_type_id')
+            ->update([
+                'emergency_type_id' => null,
+            ]);
+
+        return response()->json([
+            'message' => 'Emergency cancelled successfully',
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function status(EmergencyTriggerRequest $request)
     {
-        //
-    }
+        $location = Location::whereRelation('app', 'api_key', $request->key)
+            ->when($request->location, function ($query) use ($request) {
+                $query->where('code', $request->location);
+            })
+            ->with('emergencyType')
+            ->get()
+            ->pluck('*.emergencyType')
+            ->flatten()
+            ->unique('id')
+            ->filter();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'emergency_type' => $location->toArray(),
+        ]);
     }
 }
