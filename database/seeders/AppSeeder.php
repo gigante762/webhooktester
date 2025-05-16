@@ -14,9 +14,9 @@ class AppSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::factory(5)->create();
+        User::factory(5)->create();
 
-        foreach ($user as $u) {
+        foreach (User::all() as $u) {
             $apps = App::factory(5)->create([
                 'user_id' => $u->id,
             ]);
