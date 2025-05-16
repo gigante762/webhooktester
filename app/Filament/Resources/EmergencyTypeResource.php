@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AppResource\Pages;
-use App\Models\App;
+use App\Filament\Resources\EmergencyTypeResource\Pages;
+use App\Models\EmergencyType;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class AppResource extends Resource
+class EmergencyTypeResource extends Resource
 {
-    protected static ?string $model = App::class;
+    protected static ?string $model = EmergencyType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -20,7 +20,17 @@ class AppResource extends Resource
     {
         return $form
             ->schema([
+
+                Forms\Components\Select::make('location_id')
+                    ->relationship('location', 'name')
+                    ->required(),
+
                 Forms\Components\TextInput::make('name')
+                    ->required(),
+                Forms\Components\Textarea::make('img')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('code')
                     ->required(),
             ]);
     }
@@ -29,11 +39,11 @@ class AppResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('location.name'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -59,15 +69,16 @@ class AppResource extends Resource
     public static function getRelations(): array
     {
         return [
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListApps::route('/'),
-            'create' => Pages\CreateApp::route('/create'),
-            'edit' => Pages\EditApp::route('/{record}/edit'),
+            'index' => Pages\ListEmergencyTypes::route('/'),
+            'create' => Pages\CreateEmergencyType::route('/create'),
+            'edit' => Pages\EditEmergencyType::route('/{record}/edit'),
         ];
     }
 }
