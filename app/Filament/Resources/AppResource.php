@@ -22,6 +22,7 @@ class AppResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required(),
+                Forms\Components\TextInput::make('api_key')->readOnly(),
             ]);
     }
 
