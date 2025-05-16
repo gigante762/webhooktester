@@ -17,7 +17,7 @@ class App extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('ancient', function (Builder $builder) {
+        static::addGlobalScope('app', function (Builder $builder) {
             $builder->where('user_id', auth()->id());
         });
 
