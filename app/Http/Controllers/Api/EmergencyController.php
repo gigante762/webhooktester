@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\ViviWebhookReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EmergencyTriggerRequest;
 use App\Models\EmergencyType;
@@ -36,6 +37,8 @@ class EmergencyController extends Controller
                 'emergency_type_id' => $emergencyType->id,
             ]);
 
+        broadcast(new ViviWebhookReceived);
+
         return response()->json([
             'message' => 'Emergency triggered successfully',
         ]);
@@ -68,6 +71,8 @@ class EmergencyController extends Controller
             ->update([
                 'emergency_type_id' => null,
             ]);
+
+        broadcast(new ViviWebhookReceived);
 
         return response()->json([
             'message' => 'Emergency cancelled successfully',

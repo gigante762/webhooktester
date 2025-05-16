@@ -18,11 +18,6 @@ class ViviApp extends Component
     }
 
     #[On('echo:webhook,ViviWebhookReceived')]
-    public function test()
-    {
-        dd('oi');
-    }
-
     public function render()
     {
         return view('livewire.vivi-app');
