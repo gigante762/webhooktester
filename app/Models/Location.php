@@ -15,9 +15,11 @@ class Location extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('app', function (Builder $builder) {
-            $builder->whereRelation('app', 'user_id', auth()->id());
-        });
+        if (auth()->check()) {
+            static::addGlobalScope('app', function (Builder $builder) {
+                $builder->whereRelation('app', 'user_id', auth()->id());
+            });
+        }
     }
 
     public function app(): BelongsTo

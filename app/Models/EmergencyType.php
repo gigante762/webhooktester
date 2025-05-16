@@ -19,10 +19,13 @@ class EmergencyType extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('app', function (Builder $builder) {
-            $builder->whereHas('location.app', function (Builder $query) {
-                $query->where('user_id', auth()->id());
+
+        if (auth()->check()) {
+            static::addGlobalScope('app', function (Builder $builder) {
+                $builder->whereHas('location.app', function (Builder $query) {
+                    $query->where('user_id', auth()->id());
+                });
             });
-        });
+        }
     }
 }

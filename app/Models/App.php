@@ -17,12 +17,16 @@ class App extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('app', function (Builder $builder) {
-            $builder->where('user_id', auth()->id());
-        });
+
+        if (auth()->check()) {
+            static::addGlobalScope('app', function (Builder $builder) {
+                $builder->where('user_id', auth()->id());
+            });
+        }
 
         static::creating(function (App $app) {
-            $app->user_id = auth()->id();
+            $app->user_id = auth()?->id() ?? $app->user_id;
+            $app->api_key = $app->api_key ?? \Illuminate\Support\Str::uuid();
         });
     }
 

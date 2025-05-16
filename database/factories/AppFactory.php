@@ -18,7 +18,9 @@ class AppFactory extends Factory
     {
         return [
             'name' => $this->faker->company(),
-            'user_id' => \App\Models\User::factory(),
+            'api_key' => $this->faker->uuid(),
+            'user_id' => \App\Models\User::factory()->create()->id,
         ];
+
     }
 }
