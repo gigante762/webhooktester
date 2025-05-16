@@ -17,7 +17,10 @@ class EmergencyTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'code' => $this->faker->uuid(),
+            'img' => $this->faker->imageUrl(640, 480, 'animals', true),
+            'location_id' => \App\Models\Location::factory(),
         ];
     }
 }

@@ -17,7 +17,8 @@ class AppFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

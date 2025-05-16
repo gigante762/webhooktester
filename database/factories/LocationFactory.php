@@ -17,7 +17,9 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->city(),
+            'code' => $this->faker->uuid(),
+            'app_id' => \App\Models\App::factory(),
         ];
     }
 }
