@@ -33,6 +33,6 @@
                 </div>
             </div>
         @endforeach
-      
+    </div>
     <div class="py-2 mb-5"></div>
 </div>
