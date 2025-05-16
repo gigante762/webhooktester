@@ -17,6 +17,10 @@
                 </flux:navlist.group>
             </flux:navlist>
 
+            <flux:navlist variant="outline">
+                    <flux:navlist.item icon="home" :href="route('vivi-apps')" :current="request()->routeIs('vivi-apps')" wire:navigate>{{ __('Vivi Apps') }}</flux:navlist.item>
+            </flux:navlist>
+
             <flux:spacer />
 
             <flux:navlist variant="outline">
